@@ -35,7 +35,7 @@ def get_passenger_counts():
     df = pd.DataFrame(passenger_counts)
 
     # Extract month and day from the 'Year' column and convert it to a datetime object
-    df['Date'] = df['Year'].apply(lambda x: datetime.strptime(x, '%b %d'))
+    df['Date'] = df['Year'].apply(lambda x: datetime.strptime(x, '%m/%d/%Y'))
 
     # Sort the DataFrame by date in ascending order
     df = df.sort_values('Date')
@@ -44,6 +44,15 @@ def get_passenger_counts():
 
 # Get passenger counts data
 df = get_passenger_counts()
+
+# Extract Month-Day format from the 'Date' column
+df['Month-Day'] = df['Date'].dt.strftime('%b-%d')
+
+# Convert 'Month-Day' column to pandas datetime
+df['Month-Day'] = pd.to_datetime(df['Month-Day'], format='%b-%d')
+
+# Sort the DataFrame by the 'Month-Day' column in calendar day order
+df = df.sort_values('Month-Day')
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
@@ -55,7 +64,7 @@ app.layout = html.Div(children=[
         id='passenger-counts-graph',
         figure={
             'data': [
-                {'x': df['Date'], 'y': df[header], 'name': header}
+                {'x': df['Month-Day'].dt.strftime('%b-%d'), 'y': df[header], 'name': header, 'showlegend': 'Year' in header}
                 for header in df.columns[1:]
             ],
             'layout': {
@@ -64,8 +73,8 @@ app.layout = html.Div(children=[
                 'yaxis': {'title': 'Passenger Count'},
                 'legend': {'x': 0, 'y': 1},
                 'xaxis_tickangle': -45,
-                'xaxis_tickformat': '%b-%d',
-                'xaxis_range': [df['Date'].min(), df['Date'].max()],
+                'xaxis_range': [df['Month-Day'].min(), df['Month-Day'].max()],
+                'showlegend': True,
             }
         }
     )

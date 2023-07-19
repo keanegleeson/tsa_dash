@@ -18,3 +18,17 @@ This is a web application built with Dash that displays TSA passenger counts ove
    git clone https://github.com/your-username/tsa-passenger-counts-app.git
 
 ## Usage
+
+1. Change into the project directory:
+
+```cd tsa-passenger-counts-app```
+
+2. Install the required dependencies:
+
+```pip install -r requirements.txt```
+
+3. Run the Dash app
+
+```python tsa_passenger_dash.py```
+
+4. Open http://127.0.0.1:8050/ in a browser to view the data.
